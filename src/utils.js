@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
-import { fileURLToPath } from 'url';
+// import { fileURLToPath } from 'url';
 
 const readFile = (filePath) => {
   // const __filename = fileURLToPath(import.meta.url);
@@ -9,17 +9,17 @@ const readFile = (filePath) => {
   // console.log(`filename: ${__filename}`);
   // console.log(`dirname: ${__dirname}`);
   const cwdFilePath = process.cwd(filePath);
-  console.log(`cwdFilePath: ${cwdFilePath}`);
+  // console.log(`cwdFilePath: ${cwdFilePath}`);
   const allPath = path.resolve(cwdFilePath, filePath);
-  console.log(`allPath: ${allPath}`);
-  const resultRead = fs.readFileSync(allPath)
-  console.log(`resultRead: ${resultRead}`);
+  // console.log(`allPath: ${allPath}`);
+  const resultRead = fs.readFileSync(allPath);
+  // console.log(`resultRead: ${resultRead}`);
   return resultRead;
 };
 
 const compareFileJSON = (data1, data2) => {
-  console.log(`data1: ${data1}`);
-  console.log(`data2: ${data2}`);
+  // console.log(`data1: ${data1}`);
+  // console.log(`data2: ${data2}`);
   const cloneData1 = Object.keys(_.cloneDeep(data1));
   const cloneData2 = Object.keys(_.cloneDeep(data2));
   const consolidatedData = cloneData2.concat(cloneData1);
@@ -39,12 +39,12 @@ const compareFileJSON = (data1, data2) => {
     }
     return { ...acc, ...data1, ...data2 };
   }, {});
-  const dataWithString = Object.entries(reduceData).map(item => item.join(' ,').replace(/,/g, ': '));
+  const dataWithString = Object.entries(reduceData).map((item) => item.join(' ,').replace(/,/g, ': '));
   const stringData = `{\n${dataWithString.join().replace(/,/g, ' \n')}\n}`;
-  console.log(`consolidatedData: ${consolidatedData}`);
-  console.log(`sortData: ${sortData}`);
-  console.log(`reduceData: ${reduceData}`);
-  console.log(`stringData: ${stringData}`);
+  // console.log(`consolidatedData: ${consolidatedData}`);
+  // console.log(`sortData: ${sortData}`);
+  // console.log(`reduceData: ${reduceData}`);
+  // console.log(`stringData: ${stringData}`);
   return stringData;
 };
 

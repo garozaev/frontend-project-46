@@ -1,0 +1,12 @@
+name: node CI
+on:
+  - push
+env:
+   CI: true
+jobs: 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions\checkout@4
+      - run: make lint
+      - run: make test
