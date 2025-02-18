@@ -1,4 +1,4 @@
-name: node CI
+name: my-tests
 on:
   - push
 env:
