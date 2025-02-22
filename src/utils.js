@@ -39,7 +39,7 @@ const compareFileJSON = (data1, data2) => {
     }
     return { ...acc, ...data1, ...data2 };
   }, {});
-  const dataWithString = Object.entries(reduceData).map((item) => item.join(' ,').replace(/,/g, ': '));
+  const dataWithString = Object.entries(reduceData).map((item) => item.join(',').replace(/,/g, ' : '));
   const stringData = `{\n${dataWithString.join().replace(/,/g, '\n')}\n}`;
   // console.log(`consolidatedData: ${consolidatedData}`);
   // console.log(`sortData: ${sortData}`);
