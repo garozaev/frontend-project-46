@@ -1,4 +1,4 @@
-install: deps-install
+install: install
 	npx simple-git-hooks
 
 run:
