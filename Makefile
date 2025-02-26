@@ -1,4 +1,5 @@
-install: install
+install:
+	 deps-install
 		
 gendiff:
 	 node bin/gendiff.js
