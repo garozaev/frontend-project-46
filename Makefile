@@ -1,8 +1,4 @@
 install: install
-	npx simple-git-hooks
-
-run:
-	bin/nodejs-package.js 10
 		
 gendiff:
 	 node bin/gendiff.js
