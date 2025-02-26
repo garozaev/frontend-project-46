@@ -54,5 +54,4 @@ export default [
       'import/no-extraneous-dependencies': 'off',
     },
   },
-  { ignores: ['draft-1.js'] },
 ];
