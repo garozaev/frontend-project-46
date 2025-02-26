@@ -1,5 +1,5 @@
-install:
-	npm ci
+install: install
+	
 gendiff:
 	 node bin/gendiff.js
 publish:
