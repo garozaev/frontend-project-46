@@ -1,5 +1,5 @@
-install: npm install
-	
+linstall:
+	 npm installs	
 gendiff:
 	 node bin/gendiff.js
 publish:
