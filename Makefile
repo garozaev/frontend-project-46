@@ -1,4 +1,4 @@
-install: install
+install: npm ci
 	
 gendiff:
 	 node bin/gendiff.js
