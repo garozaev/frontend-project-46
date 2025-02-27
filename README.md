@@ -3,4 +3,4 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/f091b6fb927de4f0b06b/maintainability)](https://codeclimate.com/github/garozaev/frontend-project-46/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/f091b6fb927de4f0b06b/test_coverage)](https://codeclimate.com/github/garozaev/frontend-project-46/test_coverage)
 ### Test
-[![Node CI](https://github.com/garozaev/frontend-project-46/actions/workflows/my-tests.yml/badge.svg)](https://github.com/garozaev/frontend-project-46/actions/workflows/my-tests.yml)
+[![Node CI](https://github.com/garozaev/frontend-project-46/actions/workflows/nodejs.yml/badge.svg)](https://github.com/garozaev/frontend-project-46/actions/workflows/nodejs.yml)
