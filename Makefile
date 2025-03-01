@@ -1,8 +1,8 @@
 install:
-	 npm ci
+	npm ci
 		
 gendiff:
-	 node bin/gendiff.js
+	node bin/gendiff.js
 publish:
 	npm publish --dry-run 
 test-coverage:
