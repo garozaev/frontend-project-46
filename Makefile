@@ -6,6 +6,6 @@ gendiff:
 publish:
 	npm publish --dry-run 
 test-coverage:
-	npx test --watch -- --coverage --coverageProvider=v8
+	npx test -- --coverage --coverageProvider=v8
 lint:
 	npx eslint .
