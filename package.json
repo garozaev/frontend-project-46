@@ -8,7 +8,7 @@
     "gendiff": "bin/gendiff.js"
   },
   "scripts": {
-    "test": "jest -- --coverage --coverageProvider=v8"
+    "test": "npx jest"
   },
   "engines": {
     "node": ">=21"
@@ -18,6 +18,11 @@
   "dependencies": {
     "commander": "^13.1.0",
     "lodash": "^4.17.21"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/__tests__"
+    ]
   },
   "devDependencies": {
     "@eslint/create-config": "^1.0.0",
