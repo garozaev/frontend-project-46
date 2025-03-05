@@ -48,4 +48,15 @@ const compareFileJSON = (data1, data2) => {
   return stringData;
 };
 
-export { readFile, compareFileJSON };
+const getFormat = (filepaht1, filepath2) => {
+  const format1 = path.extname(filepaht1);
+  const format2 = path.extname(filepath2);
+  if (format1 === format2) {
+    const format = format1;
+    console.log(`format: ${format}`);
+    return format;
+  }
+  throw new Error(`Unknow values format: '${filepaht1}' or '${filepath2}'`);
+};
+
+export { readFile, compareFileJSON, getFormat };
