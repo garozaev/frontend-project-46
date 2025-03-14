@@ -4,48 +4,44 @@ import _ from 'lodash';
 // import { fileURLToPath } from 'url';
 
 const readFile = (filePath) => {
-  // const __filename = fileURLToPath(import.meta.url);
-  // const __dirname = path.dirname(filePath);
-  // console.log(`filename: ${__filename}`);
-  // console.log(`dirname: ${__dirname}`);
   const cwdFilePath = process.cwd(filePath);
-  // console.log(`cwdFilePath: ${cwdFilePath}`);
   const allPath = path.resolve(cwdFilePath, filePath);
-  // console.log(`allPath: ${allPath}`);
   const resultRead = fs.readFileSync(allPath);
+  // console.log(`cwdFilePath: ${cwdFilePath}`);
+  // console.log(`allPath: ${allPath}`);
   // console.log(`resultRead: ${resultRead}`);
   return resultRead;
 };
 
-const compareFileJSON = (data1, data2) => {
-  // console.log(`data1: ${data1}`);
-  // console.log(`data2: ${data2}`);
+const compareData = (data1, data2) => {
+  console.log(`data1: ${data1}`);
+  console.log(`data2: ${data2}`);
   const cloneData1 = Object.keys(_.cloneDeep(data1));
   const cloneData2 = Object.keys(_.cloneDeep(data2));
   const consolidatedData = cloneData2.concat(cloneData1);
   const sortData = _.sortBy(consolidatedData);
-  const reduceData = sortData.reduce((acc, key) => {
+  const biultData = sortData.flatMap((key) => {
+    if ((typeof data1[key] === 'object' && !Array.isArray(data1[key]) && data1[key] !== null)
+      && (typeof data2[key] === 'object' && !Array.isArray(data2[key]) && data2[key] !== null)) {
+      return { name: key, type: 'data', children: compareData(data1[key], data2[key]) };
+    }
     if (Object.hasOwn(data1, key) && !Object.hasOwn(data2, key)) {
-      return { ...acc, [`  - ${key}`]: data1[key] };
+      return { name: key, type: 'deleted', value: data1[key] };
     }
     if (!Object.hasOwn(data1, key) && Object.hasOwn(data2, key)) {
-      return { ...acc, [`  + ${key}`]: data2[key] };
+      return { name: key, type: 'added', value: data2[key] };
     }
     if (data1[key] !== data2[key]) {
-      return { ...acc, [`  - ${key}`]: data1[key], [`  + ${key}`]: data2[key] };
+      return {
+        name: key, type: 'chenged', value: data1[key], chengedValue: data2[key],
+      };
     }
-    if (data1[key] === data2[key]) {
-      return { ...acc, [`    ${key}`]: data1[key] };
-    }
-    return { ...acc, ...data1, ...data2 };
-  }, {});
-  const dataWithString = Object.entries(reduceData).map((item) => item.join(',').replace(/,/g, ' : '));
-  const stringData = `{\n${dataWithString.join().replace(/,/g, '\n')}\n}`;
-  // console.log(`consolidatedData: ${consolidatedData}`);
-  // console.log(`sortData: ${sortData}`);
-  // console.log(`reduceData: ${reduceData}`);
-  // console.log(`stringData: ${stringData}`);
-  return stringData;
+    return { name: key, type: 'unchenged', [`${key}`]: data2[key] };
+  });
+  console.log(`consolidatedData: ${consolidatedData}`);
+  console.log(`sortData: ${sortData}`);
+  console.log(`biultData: ${JSON.stringify(biultData)}`);
+  return biultData;
 };
 
 const getFormat = (filepaht1, filepath2) => {
@@ -53,10 +49,10 @@ const getFormat = (filepaht1, filepath2) => {
   const format2 = path.extname(filepath2);
   if (format1 === format2) {
     const format = format1;
-    console.log(`format: ${format}`);
+    // console.log(`format: ${format}`);
     return format;
   }
   throw new Error(`Unknow values format: '${filepaht1}' or '${filepath2}'`);
 };
 
-export { readFile, compareFileJSON, getFormat };
+export { readFile, compareData, getFormat };
