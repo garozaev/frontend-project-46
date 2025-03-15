@@ -14,13 +14,13 @@ const readFile = (filePath) => {
 };
 
 const compareData = (data1, data2) => {
-  console.log(`data1: ${data1}`);
-  console.log(`data2: ${data2}`);
-  const cloneData1 = Object.keys(_.cloneDeep(data1));
-  const cloneData2 = Object.keys(_.cloneDeep(data2));
-  const consolidatedData = cloneData2.concat(cloneData1);
-  const sortData = _.sortBy(consolidatedData);
-  const biultData = sortData.flatMap((key) => {
+  // console.log(`data1: ${data1}`);
+  // console.log(`data2: ${data2}`);
+  // const cloneData1 = Object.keys(_.cloneDeep(data1));
+  // const cloneData2 = Object.keys(_.cloneDeep(data2));
+  const consolidateKey = Object.keys(data1).concat(Object.keys(data2));
+  const sortedKey = _.sortBy(consolidateKey);
+  const biultChanges = sortedKey.flatMap((key) => {
     if ((typeof data1[key] === 'object' && !Array.isArray(data1[key]) && data1[key] !== null)
       && (typeof data2[key] === 'object' && !Array.isArray(data2[key]) && data2[key] !== null)) {
       return { name: key, type: 'data', children: compareData(data1[key], data2[key]) };
@@ -36,12 +36,12 @@ const compareData = (data1, data2) => {
         name: key, type: 'chenged', value: data1[key], chengedValue: data2[key],
       };
     }
-    return { name: key, type: 'unchenged', [`${key}`]: data2[key] };
+    return { name: key, type: 'unchenged', value: data2[key] };
   });
-  console.log(`consolidatedData: ${consolidatedData}`);
-  console.log(`sortData: ${sortData}`);
-  console.log(`biultData: ${JSON.stringify(biultData)}`);
-  return biultData;
+  console.log(`consolidateKey: ${consolidateKey}`);
+  console.log(`sortedKey: ${sortedKey}`);
+  console.log(`biultChanges: ${JSON.stringify(biultChanges)}`);
+  return biultChanges;
 };
 
 const getFormat = (filepaht1, filepath2) => {

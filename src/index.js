@@ -9,14 +9,15 @@ const genDiff = (filepath1, filepath2, format = getFormat(filepath1, filepath2))
   const parsesData2 = parses(data2, format);
   const diff = compareData(parsesData1, parsesData2);
   console.log(`diff: ${diff}`);
-  // const fpormattedDiff = formater(diff);
+  const fpormattedDiff = stylish(diff);
+  console.log(`fpormattedDiff: ${fpormattedDiff}`);
   // console.log(`data1: ${data1}`);
   // console.log(`data2: ${data2}`);
   // console.log(`parsesData1: ${parsesData1}`);
   // console.log(`parsesData2: ${parsesData2}`);
   // console.log(`diff: ${diff}`);
   // console.log(`fpormattedDiff: ${fpormattedDiff}`);
-  return diff;
+  return fpormattedDiff;
 };
 
 export default genDiff;
