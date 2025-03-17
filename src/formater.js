@@ -10,28 +10,29 @@ const stylish = (data) => {
   const formattedChenges = data.reduce((acc, obj) => {
     if (obj.type === 'deleted') {
       if (_.isObject(obj.value)) {
-        return { ...acc, [`  - ${obj.name}`]: JSON.stringify(obj.value) };
+        return { ...acc, [`${'  -'.repeat(obj.deep)} ${obj.name}`]: obj.value };
       }
-      return { ...acc, [`  - ${obj.name}`]: obj.value };
+      return { ...acc, [`${'  -'.repeat(obj.deep)} ${obj.name}`]: obj.value };
     }
     if (obj.type === 'added') {
       if (_.isObject(obj.value)) {
-        return { ...acc, [`  + ${obj.name}`]: JSON.stringify(obj.value) };
+        return { ...acc, [`${'  +'.repeat(obj.deep)} ${obj.name}`]: obj.value };
       }
-      return { ...acc, [`  + ${obj.name}`]: obj.value };
+      return { ...acc, [`${'  +'.repeat(obj.deep)} ${obj.name}`]: obj.value };
     }
     if (obj.type === 'chenged') {
-      return { ...acc, [`  - ${obj.name}`]: obj.value, [`  + ${obj.name}`]: obj.chengedValue };
+      return { ...acc, [`${'  -'.repeat(obj.deep)} ${obj.name}`]: obj.value, [`${'  +'.repeat(obj.deep)} ${obj.name}`]: obj.chengedValue };
     }
     if (obj.type === 'data') {
       return { ...acc, [`   ch ${obj.name}`]: stylish(obj.children) };
     }
-    return { ...acc, [`    ${obj.name}`]: obj.value };
+    return { ...acc, [`${'   '.repeat(obj.deep)} ${obj.name}`]: obj.value };
   }, {});
   // const dataWithString = Object.entries(formattedChenges).map((item) => item.join(',').replace(/,/g, ': '));
   // const stringСhenges = `{\n${dataWithString.join().replace(/,/g, '\n')}\n}`;
   // console.log(`consolidatedData: ${consolidatedData}`);
-  console.log(`formattedChenges: ${JSON.stringify(formattedChenges)}`);
+  const taypeOfFormatted = (typeof (`formattedChenges: ${JSON.stringify(formattedChenges)}`));
+  console.log(`formattedChenges: ${JSON.stringify(formattedChenges)}: ${taypeOfFormatted}`);
   // console.log(`dataWithString: ${dataWithString}`);
   // console.log(`stringСhenges: ${stringСhenges}`);
   return formattedChenges;

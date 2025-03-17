@@ -19,29 +19,40 @@ const compareData = (data1, data2) => {
   // const cloneData1 = Object.keys(_.cloneDeep(data1));
   // const cloneData2 = Object.keys(_.cloneDeep(data2));
   const consolidateKey = Object.keys(data1).concat(Object.keys(data2));
-  const sortedKey = _.sortBy(consolidateKey);
-  const biultChanges = sortedKey.flatMap((key) => {
-    if ((typeof data1[key] === 'object' && !Array.isArray(data1[key]) && data1[key] !== null)
-      && (typeof data2[key] === 'object' && !Array.isArray(data2[key]) && data2[key] !== null)) {
-      return { name: key, type: 'data', children: compareData(data1[key], data2[key]) };
-    }
-    if (Object.hasOwn(data1, key) && !Object.hasOwn(data2, key)) {
-      return { name: key, type: 'deleted', value: data1[key] };
-    }
-    if (!Object.hasOwn(data1, key) && Object.hasOwn(data2, key)) {
-      return { name: key, type: 'added', value: data2[key] };
-    }
-    if (data1[key] !== data2[key]) {
+  const sortedKeys = _.sortBy(consolidateKey);
+  const biult = (data, depth) => {
+    data.flatMap((key) => {
+      if ((typeof data1[key] === 'object' && !Array.isArray(data1[key]) && data1[key] !== null)
+        && (typeof data2[key] === 'object' && !Array.isArray(data2[key]) && data2[key] !== null)) {
+        const currentDepth = depth + 1;
+        return {
+          name: key, type: 'data', children: compareData(data1[key], data2[key]), depth: currentDepth,
+        };
+      }
+      if (Object.hasOwn(data1, key) && !Object.hasOwn(data2, key)) {
+        return {
+          name: key, type: 'deleted', value: data1[key], depth,
+        };
+      }
+      if (!Object.hasOwn(data1, key) && Object.hasOwn(data2, key)) {
+        return {
+          name: key, type: 'added', value: data2[key], depth,
+        };
+      }
+      if (data1[key] !== data2[key]) {
+        return {
+          name: key, type: 'chenged', value: data1[key], chengedValue: data2[key], depth,
+        };
+      }
       return {
-        name: key, type: 'chenged', value: data1[key], chengedValue: data2[key],
+        name: key, type: 'unchenged', value: data2[key], depth,
       };
-    }
-    return { name: key, type: 'unchenged', value: data2[key] };
-  });
+    });
+  };
   console.log(`consolidateKey: ${consolidateKey}`);
-  console.log(`sortedKey: ${sortedKey}`);
-  console.log(`biultChanges: ${JSON.stringify(biultChanges)}`);
-  return biultChanges;
+  console.log(`sortedKey: ${sortedKeys}`);
+  // console.log(`biultChanges: ${JSON.stringify(biult)}`);
+  return biult(sortedKeys, 1);
 };
 
 const getFormat = (filepaht1, filepath2) => {
