@@ -13,46 +13,45 @@ const readFile = (filePath) => {
   return resultRead;
 };
 
-const compareData = (data1, data2) => {
+const compareData = (data1, data2, depth = 1) => {
   // console.log(`data1: ${data1}`);
   // console.log(`data2: ${data2}`);
   // const cloneData1 = Object.keys(_.cloneDeep(data1));
   // const cloneData2 = Object.keys(_.cloneDeep(data2));
   const consolidateKey = Object.keys(data1).concat(Object.keys(data2));
   const sortedKeys = _.sortBy(consolidateKey);
-  const biult = (data, depth) => {
-    data.flatMap((key) => {
-      if ((typeof data1[key] === 'object' && !Array.isArray(data1[key]) && data1[key] !== null)
-        && (typeof data2[key] === 'object' && !Array.isArray(data2[key]) && data2[key] !== null)) {
-        const currentDepth = depth + 1;
-        return {
-          name: key, type: 'data', children: compareData(data1[key], data2[key]), depth: currentDepth,
-        };
-      }
-      if (Object.hasOwn(data1, key) && !Object.hasOwn(data2, key)) {
-        return {
-          name: key, type: 'deleted', value: data1[key], depth,
-        };
-      }
-      if (!Object.hasOwn(data1, key) && Object.hasOwn(data2, key)) {
-        return {
-          name: key, type: 'added', value: data2[key], depth,
-        };
-      }
-      if (data1[key] !== data2[key]) {
-        return {
-          name: key, type: 'chenged', value: data1[key], chengedValue: data2[key], depth,
-        };
-      }
+  const filteredKeys = [...new Set(sortedKeys)];
+  const biultChenges = filteredKeys.flatMap((key) => {
+    if (_.isObject(data1[key])
+      && _.isObject(data2[key])) {
       return {
-        name: key, type: 'unchenged', value: data2[key], depth,
+        name: key, type: 'data', children: compareData(data1[key], data2[key], depth + 1), depth,
       };
-    });
-  };
+    }
+    if (Object.hasOwn(data1, key) && !Object.hasOwn(data2, key)) {
+      return {
+        name: key, type: 'deleted', value: data1[key], depth,
+      };
+    }
+    if (!Object.hasOwn(data1, key) && Object.hasOwn(data2, key)) {
+      return {
+        name: key, type: 'added', value: data2[key], depth,
+      };
+    }
+    if (data1[key] !== data2[key]) {
+      return {
+        name: key, type: 'chenged', value: data1[key], chengedValue: data2[key], depth,
+      };
+    }
+    return {
+      name: key, type: 'unchenged', value: data2[key], depth,
+    };
+  });
+  const result = biultChenges;
   console.log(`consolidateKey: ${consolidateKey}`);
   console.log(`sortedKey: ${sortedKeys}`);
-  // console.log(`biultChanges: ${JSON.stringify(biult)}`);
-  return biult(sortedKeys, 1);
+  console.log(`resultBiult: ${JSON.stringify(result)}`);
+  return result;
 };
 
 const getFormat = (filepaht1, filepath2) => {

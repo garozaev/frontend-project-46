@@ -2,40 +2,39 @@ import _ from 'lodash';
 
 const stylish = (data) => {
   console.log(`dataStylish: ${data}`);
-  // console.log(`data2: ${data2}`);
-  // const cloneData1 = Object.keys(_.cloneDeep(data1));
-  // const cloneData2 = Object.keys(_.cloneDeep(data2));
-  // const consolidatedData = cloneData2.concat(cloneData1);
-  // const sortData = _.sortBy(consolidatedData);
   const formattedChenges = data.reduce((acc, obj) => {
+    if (obj.type === 'data') {
+      return [...acc, `\n${'  '.repeat(obj.depth)}  ${obj.name}:${stylish(obj.children)}`];
+    }
     if (obj.type === 'deleted') {
-      if (_.isObject(obj.value)) {
-        return { ...acc, [`${'  -'.repeat(obj.deep)} ${obj.name}`]: obj.value };
-      }
-      return { ...acc, [`${'  -'.repeat(obj.deep)} ${obj.name}`]: obj.value };
+      // if (_.isObject(obj.value)) {
+      //   return [...acc, `\n${'  '.repeat(obj.depth)}- ${obj.name}: ${stylish(obj.value)}`];
+      // }
+      return [...acc, `\n${'  '.repeat(obj.depth)}- ${obj.name}:${obj.value}\n${'  '.repeat(obj.depth)}`];
     }
     if (obj.type === 'added') {
-      if (_.isObject(obj.value)) {
-        return { ...acc, [`${'  +'.repeat(obj.deep)} ${obj.name}`]: obj.value };
-      }
-      return { ...acc, [`${'  +'.repeat(obj.deep)} ${obj.name}`]: obj.value };
+      // if (_.isObject(obj.value)) {
+      //   return [...acc, `\n${'  '.repeat(obj.depth)}+ ${obj.name}: ${stylish(obj.value)}`];
+      // }
+      return [...acc, `\n${'  '.repeat(obj.depth)}+ ${obj.name}:${obj.value}\n${'  '.repeat(obj.depth)}`];
     }
     if (obj.type === 'chenged') {
-      return { ...acc, [`${'  -'.repeat(obj.deep)} ${obj.name}`]: obj.value, [`${'  +'.repeat(obj.deep)} ${obj.name}`]: obj.chengedValue };
+      return [...acc, `\n${'  '.repeat(obj.depth)}- ${obj.name}:${obj.value}\n${'  '.repeat(obj.depth)},\n${'  '.repeat(obj.depth)}+ ${obj.name}:${obj.chengedValue}\n${'  '.repeat(obj.depth)}`];
     }
-    if (obj.type === 'data') {
-      return { ...acc, [`   ch ${obj.name}`]: stylish(obj.children) };
-    }
-    return { ...acc, [`${'   '.repeat(obj.deep)} ${obj.name}`]: obj.value };
-  }, {});
-  // const dataWithString = Object.entries(formattedChenges).map((item) => item.join(',').replace(/,/g, ': '));
-  // const stringСhenges = `{\n${dataWithString.join().replace(/,/g, '\n')}\n}`;
-  // console.log(`consolidatedData: ${consolidatedData}`);
-  const taypeOfFormatted = (typeof (`formattedChenges: ${JSON.stringify(formattedChenges)}`));
-  console.log(`formattedChenges: ${JSON.stringify(formattedChenges)}: ${taypeOfFormatted}`);
-  // console.log(`dataWithString: ${dataWithString}`);
-  // console.log(`stringСhenges: ${stringСhenges}`);
-  return formattedChenges;
+    return [...acc, `\n${'  '.repeat(obj.depth)}  ${obj.name}:${obj.value}\n${'  '.repeat(obj.depth)}`];
+  }, []);
+  console.log(`formattedChenges: ${formattedChenges} : ${typeof formattedChenges}`);
+  const sortedFormattedChenges = _.sortBy(formattedChenges);
+  console.log(`sortedFormattedChenges: ${sortedFormattedChenges} : ${typeof sortedFormattedChenges}`);
+  return sortedFormattedChenges;
 };
 
 export default stylish;
+
+// const ChengesToString = JSON.stringify(formattedChenges);
+// console.log(`ChengesToString: ${ChengesToString}: ${typeof ChengesToString}`);
+// const dataWithString = Object.entries(formattedChenges).map((item) => item.join(',').replace(/,/g, ': '));
+// const stringСhenges = `{\n${dataWithString.join().replace(/,/g, '\n')}\n}`;
+// console.log(`consolidatedData: ${consolidatedData}`);
+// console.log(`dataWithString: ${dataWithString}`);
+// console.log(`stringСhenges: ${stringСhenges}`);
