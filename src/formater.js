@@ -7,19 +7,19 @@ const stylish = (data) => {
       return [...acc, `\n${'  '.repeat(obj.depth)}  ${obj.name}:${stylish(obj.children)}`];
     }
     if (obj.type === 'deleted') {
-      // if (_.isObject(obj.value)) {
-      //   return [...acc, `\n${'  '.repeat(obj.depth)}- ${obj.name}: ${stylish(obj.value)}`];
-      // }
+      if (_.isObject(obj.value)) {
+        return [...acc, `\n${'  '.repeat(obj.depth)}- ${obj.name}: ${JSON.stringify(obj.value)}`];
+      }
       return [...acc, `\n${'  '.repeat(obj.depth)}- ${obj.name}:${obj.value}\n${'  '.repeat(obj.depth)}`];
     }
     if (obj.type === 'added') {
-      // if (_.isObject(obj.value)) {
-      //   return [...acc, `\n${'  '.repeat(obj.depth)}+ ${obj.name}: ${stylish(obj.value)}`];
-      // }
+      if (_.isObject(obj.value)) {
+        return [...acc, `\n${'  '.repeat(obj.depth)}+ ${obj.name}: ${JSON.stringify(obj.value)}`];
+      }
       return [...acc, `\n${'  '.repeat(obj.depth)}+ ${obj.name}:${obj.value}\n${'  '.repeat(obj.depth)}`];
     }
     if (obj.type === 'chenged') {
-      return [...acc, `\n${'  '.repeat(obj.depth)}- ${obj.name}:${obj.value}\n${'  '.repeat(obj.depth)},\n${'  '.repeat(obj.depth)}+ ${obj.name}:${obj.chengedValue}\n${'  '.repeat(obj.depth)}`];
+      return [...acc, `\n${'  '.repeat(obj.depth)}- ${obj.name}:${obj.value}\n${'  '.repeat(obj.depth)}+ ${obj.name}:${obj.chengedValue}\n${'  '.repeat(obj.depth)}`];
     }
     return [...acc, `\n${'  '.repeat(obj.depth)}  ${obj.name}:${obj.value}\n${'  '.repeat(obj.depth)}`];
   }, []);

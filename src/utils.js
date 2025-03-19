@@ -29,22 +29,26 @@ const compareData = (data1, data2, depth = 1) => {
       };
     }
     if (Object.hasOwn(data1, key) && !Object.hasOwn(data2, key)) {
+      const curentdDepth = depth + 1;
       return {
-        name: key, type: 'deleted', value: data1[key], depth,
+        name: key, type: 'deleted', value: data1[key], depth: curentdDepth,
       };
     }
     if (!Object.hasOwn(data1, key) && Object.hasOwn(data2, key)) {
+      const curentdDepth = depth + 1;
       return {
-        name: key, type: 'added', value: data2[key], depth,
+        name: key, type: 'added', value: data2[key], depth: curentdDepth,
       };
     }
     if (data1[key] !== data2[key]) {
+      const curentdDepth = depth + 1;
       return {
-        name: key, type: 'chenged', value: data1[key], chengedValue: data2[key], depth,
+        name: key, type: 'chenged', value: data1[key], chengedValue: data2[key], depth: curentdDepth,
       };
     }
+    const curentDepth = depth + 1;
     return {
-      name: key, type: 'unchenged', value: data2[key], depth,
+      name: key, type: 'unchenged', value: data2[key], depth: curentDepth,
     };
   });
   const result = biultChenges;
