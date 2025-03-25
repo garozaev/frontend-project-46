@@ -13,7 +13,7 @@ const readFile = (filePath) => {
   return resultRead;
 };
 
-const compareData = (data1, data2, depth = 1) => {
+const compareData = (data1, data2) => {
   // console.log(`data1: ${data1}`);
   // console.log(`data2: ${data2}`);
   // const cloneData1 = Object.keys(_.cloneDeep(data1));
@@ -25,30 +25,26 @@ const compareData = (data1, data2, depth = 1) => {
     if (_.isObject(data1[key])
       && _.isObject(data2[key])) {
       return {
-        name: key, type: 'data', children: compareData(data1[key], data2[key], depth + 1), depth,
+        name: key, type: 'data', children: compareData(data1[key], data2[key]),
       };
     }
     if (Object.hasOwn(data1, key) && !Object.hasOwn(data2, key)) {
-      const curentdDepth = depth + 1;
       return {
-        name: key, type: 'deleted', value: data1[key], depth: curentdDepth,
+        name: key, type: 'deleted', value: data1[key],
       };
     }
     if (!Object.hasOwn(data1, key) && Object.hasOwn(data2, key)) {
-      const curentdDepth = depth + 1;
       return {
-        name: key, type: 'added', value: data2[key], depth: curentdDepth,
+        name: key, type: 'added', value: data2[key],
       };
     }
     if (data1[key] !== data2[key]) {
-      const curentdDepth = depth + 1;
       return {
-        name: key, type: 'chenged', value: data1[key], chengedValue: data2[key], depth: curentdDepth,
+        name: key, type: 'chenged', value: data1[key], chengedValue: data2[key],
       };
     }
-    const curentDepth = depth + 1;
     return {
-      name: key, type: 'unchenged', value: data2[key], depth: curentDepth,
+      name: key, type: 'unchenged', value: data2[key],
     };
   });
   const result = biultChenges;
