@@ -9,13 +9,13 @@ const stylish = (data) => {
       }
       if (obj.type === 'deleted') {
         if (_.isObject(obj.value)) {
-          return `\n${'  '.repeat(depth)}- ${obj.name}: ${JSON.stringify(obj.value)}`;
+          return `\n${'  '.repeat(depth)}- ${obj.name}: ${JSON.stringify(obj.value, null, '        ')}`;
         }
         return `\n${'  '.repeat(depth)}- ${obj.name}: ${obj.value}`;
       }
       if (obj.type === 'added') {
         if (_.isObject(obj.value)) {
-          return `\n${'  '.repeat(depth)}+ ${obj.name}: ${JSON.stringify(obj.value)}`;
+          return `\n${'  '.repeat(depth)}+ ${obj.name}: ${JSON.stringify(obj.value, null, '        ')}`;
         }
         return `\n${'  '.repeat(depth)}+ ${obj.name}: ${obj.value}`;
       }
@@ -28,7 +28,7 @@ const stylish = (data) => {
   };
   const builtChenged = iter(data, 1);
   console.log(`builtChenged: ${builtChenged} : ${typeof builtChenged}`);
-  return builtChenged.replace(',', '');
+  return builtChenged.replace(/,|"/g, '');
 };
 
 export default stylish;
