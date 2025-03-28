@@ -3,32 +3,27 @@ import _ from 'lodash';
 const stylish = (data) => {
   console.log(`dataStylish: ${data}`);
   const iter = (node, depth) => {
-    const result = node.flatMap((obj) => {
+    const result = node.reduce((acc, obj) => {
       if (obj.type === 'data') {
-        return `\n${'  '.repeat(depth)}  ${obj.name}: {${iter(obj.children, depth + 2)}\n  ${'  '.repeat(depth)}}`;
+        return { ...acc, [`${'  '.repeat(depth)}  ${obj.name}`]: iter(obj.children, depth + 1) };
       }
       if (obj.type === 'deleted') {
-        if (_.isObject(obj.value)) {
-          return `\n${'  '.repeat(depth)}- ${obj.name}: ${JSON.stringify(obj.value, null, '        ')}`;
-        }
-        return `\n${'  '.repeat(depth)}- ${obj.name}: ${obj.value}`;
+        return { ...acc, [`${'  '.repeat(depth)}- ${obj.name}`]: obj.value };
       }
       if (obj.type === 'added') {
-        if (_.isObject(obj.value)) {
-          return `\n${'  '.repeat(depth)}+ ${obj.name}: ${JSON.stringify(obj.value, null, '        ')}`;
-        }
-        return `\n${'  '.repeat(depth)}+ ${obj.name}: ${obj.value}`;
+        return { ...acc, [`${'  '.repeat(depth)}+ ${obj.name}`]: obj.value };
       }
       if (obj.type === 'chenged') {
-        return `\n${'  '.repeat(depth)}- ${obj.name}: ${obj.value}\n${'  '.repeat(depth)}+ ${obj.name}: ${obj.chengedValue}`;
+        return { ...acc, [`${'  '.repeat(depth)}- ${obj.name}`]: obj.value, [`${'  '.repeat(depth)}+ ${obj.name}`]: obj.chengedValue };
       }
-      return `\n${'  '.repeat(depth)}  ${obj.name}: ${obj.value}`;
-    });
-    return result.join('');
+      return { ...acc, [`${'  '.repeat(depth)}  ${obj.name}`]: obj.value };
+    }, {});
+    return result;
   };
-  const builtChenged = iter(data, 1);
-  console.log(`builtChenged: ${builtChenged} : ${typeof builtChenged}`);
-  return builtChenged.replace(/,|"/g, '');
+  const builtChenged = iter(data, 0);
+  const strigifyChenged = JSON.stringify(builtChenged, null, 2).replace(/,|"/g, '');
+  console.log(`builtChenged: ${strigifyChenged} : ${typeof strigifyChenged}`);
+  return strigifyChenged;
 };
 
 export default stylish;
