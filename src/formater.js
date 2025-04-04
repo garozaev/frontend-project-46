@@ -1,22 +1,44 @@
 import _ from 'lodash';
 
-const stylish = (data) => {
-  console.log(`dataStylish: ${data}`);
+// const objToString = (obj, depth) => {
+//   obj.reduce((acc, key) => {
+//     if (_.isObject(key)) {
+//       return { ...acc, [`${'  '.repeat(depth)}  ${key}`]: objToString(obj.children, depth + 1) }
+//     }
+//     return   ...acc, [`${'  '.repeat(depth)}  ${obj.key}`] ;
+// }, { });
+// }
+
+const stylish = ([tree, keys]) => {
+  console.log(`dataStylish: ${tree}`);
   const iter = (node, depth) => {
-    const result = node.reduce((acc, obj) => {
-      if (obj.type === 'data') {
-        return { ...acc, [`${'  '.repeat(depth)}  ${obj.name}`]: iter(obj.children, depth + 1) };
+    const result = keys.reduce((acc, key) => {
+      if (_.isObject(tree[key]) && !tree.type) {
+        return { ...acc, [`${'  '.repeat(depth)}  ${key}`]: iter(key, depth + 1) };
       }
-      if (obj.type === 'deleted') {
-        return { ...acc, [`${'  '.repeat(depth)}- ${obj.name}`]: obj.value };
+      if (tree.type === 'data') {
+        return { ...acc, [`${'  '.repeat(depth)}  ${key}`]: iter(key, depth + 1) };
       }
-      if (obj.type === 'added') {
-        return { ...acc, [`${'  '.repeat(depth)}+ ${obj.name}`]: obj.value };
+      if (tree.type === 'deleted') {
+        if (_.isObject(tree[key])) {
+          return {
+            ...acc, [`${'  '.repeat(depth)}- ${key}`]: iter(key, depth + 1),
+          };
+        }
+        return { ...acc, [`${'  '.repeat(depth)}- ${key}`]: tree[key] };
       }
-      if (obj.type === 'chenged') {
-        return { ...acc, [`${'  '.repeat(depth)}- ${obj.name}`]: obj.value, [`${'  '.repeat(depth)}+ ${obj.name}`]: obj.chengedValue };
+      if (tree.type === 'added') {
+        if (_.isObject(tree[key])) {
+          return {
+            ...acc, [`${'  '.repeat(depth)}+ ${key}`]: iter(key, depth + 1),
+          };
+        }
+        return { ...acc, [`${'  '.repeat(depth)}+ ${key}`]: tree[key] };
       }
-      return { ...acc, [`${'  '.repeat(depth)}  ${obj.name}`]: obj.value };
+      if (tree.type === 'chenged') {
+        return { ...acc, [`${'  '.repeat(depth)}- ${key}`]: tree[key], [`${'  '.repeat(depth)}+ ${key}`]: tree.chengedValue };
+      }
+      return { ...acc, [`${'  '.repeat(depth)}  ${key}`]: tree[key] };
     }, {});
     return result;
   };
