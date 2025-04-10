@@ -20,38 +20,38 @@ const compareData = (data1, data2) => {
   // const cloneData2 = Object.keys(_.cloneDeep(data2));
   const consolidateKey = Object.keys(data1).concat(Object.keys(data2));
   const sortedKeys = _.sortBy(consolidateKey);
-  const keys = [...new Set(sortedKeys)];
-  const biultChenges = keys.flatMap((key) => {
+  const filteredKeys = [...new Set(sortedKeys)];
+  const biultChenges = filteredKeys.flatMap((key) => {
     if (_.isObject(data1[key])
       && _.isObject(data2[key])) {
       return {
-        type: 'data', [key]: compareData(data1[key], data2[key]),
+        name: key, type: 'data', children: compareData(data1[key], data2[key]),
       };
     }
     if (Object.hasOwn(data1, key) && !Object.hasOwn(data2, key)) {
       return {
-        type: 'deleted', [key]: data1[key],
+        name: key, type: 'deleted', value: data1[key],
       };
     }
     if (!Object.hasOwn(data1, key) && Object.hasOwn(data2, key)) {
       return {
-        type: 'added', [key]: data2[key],
+        name: key, type: 'added', value: data2[key],
       };
     }
     if (data1[key] !== data2[key]) {
       return {
-        type: 'chenged', [key]: data1[key], chengedValue: data2[key],
+        name: key, type: 'chenged', value: data1[key], chengedValue: data2[key],
       };
     }
     return {
-      type: 'unchenged', [key]: data2[key],
+      name: key, type: 'unchenged', value: data2[key],
     };
   });
   const result = biultChenges;
   console.log(`consolidateKey: ${consolidateKey}`);
   console.log(`sortedKey: ${sortedKeys}`);
   console.log(`resultBiult: ${JSON.stringify(result, null, 2)}`);
-  return [result, keys];
+  return result;
 };
 
 const getFormat = (filepaht1, filepath2) => {
