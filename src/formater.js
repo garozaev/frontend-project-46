@@ -1,53 +1,53 @@
 import _ from 'lodash';
 
-const modifyData = (value) => {
+const modifyData = (value, curentDepth) => {
   console.log(`Value: ${value}`);
   if (!_.isObject(value)) {
     return value;
   }
 
   const iter = (data, depth) => {
-    const newObject = Object.keys(data).reduce((acc, key) => {
+    const newObject = Object.keys(data).flatMap((key) => {
       if (_.isObject(data[key])) {
-        return { ...acc, [`${'  '.repeat(depth)}  ${key}`]: iter(data[key], depth + 1) };
+        return `*\n${'  '.repeat(depth)}      ${key}: {${iter(data[key], depth + 2)}\n      ${'  '.repeat(depth)}}`;
       }
-      return { ...acc, [`${'  '.repeat(depth)}  ${key}`]: data[key] };
-    }, {});
+      return `\n${'  '.repeat(depth)}      ${key}: ${data[key]}`;
+    });
     return newObject;
   };
-  const result = iter(value, 0);
+  const result = iter(value, curentDepth);
   console.log(`ModifyValue: ${JSON.stringify(result)}`);
   return result;
 };
-// const sortedKeys = _.sortBy(keys);
 
 const stylish = (data) => {
   console.log(`dataStylish: ${data}`);
   const iter = (node, depth) => {
-    const result = node.reduce((acc, obj) => {
+    const result = node.flatMap((obj) => {
       if (obj.type === 'data') {
-        return { ...acc, [`${'  '.repeat(depth)}  ${obj.name}`]: iter(obj.children, depth + 1) };
+        return `*\n${'  '.repeat(depth)}  ${obj.name}: {${iter(obj.children, depth + 2)}\n  ${'  '.repeat(depth)}}`;
       }
       if (obj.type === 'deleted') {
-        return { ...acc, [`${'  '.repeat(depth)}- ${obj.name}`]: modifyData(obj.value) };
+        return `\n${'  '.repeat(depth)}- ${obj.name}: ${modifyData(obj.value, depth)}`;
       }
       if (obj.type === 'added') {
-        return { ...acc, [`${'  '.repeat(depth)}+ ${obj.name}`]: modifyData(obj.value) };
+        return `\n${'  '.repeat(depth)}+ ${obj.name}: ${modifyData(obj.value, depth)}`;
       }
       if (obj.type === 'chenged') {
-        return { ...acc, [`${'  '.repeat(depth)}- ${obj.name}`]: modifyData(obj.value), [`${'  '.repeat(depth)}+ ${obj.name}`]: modifyData(obj.chengedValue) };
+        return `\n${'  '.repeat(depth)}- ${obj.name}: ${modifyData(obj.value, depth)}\n${'  '.repeat(depth)}+ ${obj.name}: ${modifyData(obj.chengedValue, depth)}`;
       }
-      return { ...acc, [`${'  '.repeat(depth)}  ${obj.name}`]: obj.value };
-    }, {});
+      return `\n${'  '.repeat(depth)}  ${obj.name}: ${modifyData(obj.value, depth)}`;
+    });
     return result;
   };
-  const builtChenged = iter(data, 0);
-  const strigifyChenged = JSON.stringify(builtChenged, null, 2).replace(/,|"/g, '');
-  console.log(`builtChenged: ${strigifyChenged} : ${typeof strigifyChenged}`);
-  return strigifyChenged;
+  const builtChenged = iter(data, 1);
+  console.log(`builtChenged: ${builtChenged} : ${typeof builtChenged}`);
+  return builtChenged.join('#').replace(/,|"/g, '');
 };
 
 export default stylish;
+
+// const strigifyChenged = JSON.stringify(builtChenged, null, 4).replace(/,|"/g, '');
 
 // const sortedFormattedChenges = _.sortBy(formattedChenges);
 // console.log(`sortedFormattedChenges: ${sortedFormattedChenges} : ${typeof sortedFormattedChenges}`);
